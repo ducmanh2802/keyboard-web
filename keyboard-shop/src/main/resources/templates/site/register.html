@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Register</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<script th:src="@{/../../js/app.js}"></script>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-7"
+				style="margin: 40px auto 60px auto; border-radius: 10px;">
+				<a th:href="@{/home}" class="fa fa-home"
+					style="font-size: 50px; text-decoration: none; color: gray;"></a>
+				<form th:action="@{/register}" method="post" th:object="${customer}"
+					style="border: 1px solid rgba(128, 128, 128, 0.308); border-radius: 10px; box-shadow: 0 2px 2px rgba(128, 128, 128, 0.158); background-color: rgba(169, 215, 255, 0.034);">
+					<div class="card-header">
+						<h2 class="text-center" style="font-weight: bold;">Đăng kí</h2>
+					</div>
+					<div class="card-body">
+						<!-- 						<div class="row"> -->
+						<!-- 							<div class="col">								 -->
+						<!-- 								<img th:src="@{'/getcustomer/'+${photo}}" style="width: 100px" id="img" -->
+						<!-- 									class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}"> -->
+						<!-- 									<label for="customerImage">Ảnh đại diện</label> -->
+						<!-- 							</div> -->
+						<!-- 							<div class="col"> -->
+						<!-- 								<div class="form-group"> <input -->
+						<!-- 										type="file" name="photo" id="customerImage" -->
+						<!-- 										class="form-control-file" onchange="readURL(this);"> <input -->
+						<!-- 										type="hidden" name="imgC" th:value="*{image}" /> -->
+						<!-- 								</div> -->
+						<!-- 							</div> -->
+						<!-- 						</div> -->
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label for="name">Họ Và Tên</label> <input id="name"
+										th:field="*{name}" class="form-control" type="text"
+										name="name"> <small
+										th:if="${#fields.hasErrors('name')}" class="text-danger"><i>Họ
+											tên không được để trống</i></small>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="email">Email</label> <input id="email"
+										th:field="*{email}" class="form-control" type="text"
+										name="email"> <small
+										th:if="${#fields.hasErrors('email')}" class="text-danger"><i>Email
+											không được để trống</i></small> <small
+										th:if="${error}" th:text="${error}" class="text-danger"><i></i></small>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label for="password">Mật Khẩu</label> <input id="password"
+										th:value="*{password}" class="form-control" type="password"
+										name="password"> <small
+										th:if="${#fields.hasErrors('password')}" class="text-danger"><i>Mật
+											khẩu không được để trống (trên 6 kí tự)</i></small>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="gender">Giới Tính</label> <select id="gender"
+										th:field="*{gender}" class="form-control" name="gender">
+										<option value="true">Nam</option>
+										<option value="false">Nữ</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label for="address">Địa Chỉ</label> <input type="text"
+										th:field="*{address}" id="address" class="form-control"
+										name="address"> <small
+										th:if="${#fields.hasErrors('address')}" class="text-danger"><i>Địa
+											chỉ không được để trống</i></small>
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="phone">Số điện thoại</label> <input id="phone"
+										th:field="*{phone}" class="form-control" type="text"
+										name="phone"> <small
+										th:if="${#fields.hasErrors('phone')}" class="text-danger"><i>Hãy
+											nhập đúng số điện thoại</i></small>
+								</div>
+							</div>
+						</div>
+						<hr>
+						<div>
+							<button class="btn btn-outline-primary">ĐĂNG KÍ</button>
+							<button type="submit" class="btn btn-outline-danger ml-2"
+								data-dismiss="modal" formaction="/register" formmethod="get">HUỶ</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+			crossorigin="anonymous"></script>
+</body>
+
+</html>

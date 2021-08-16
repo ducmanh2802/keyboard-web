@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Lỗi</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/../assets/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <!-- <link href="css/styles.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body style="background: url(/../assets/BG.png) no-repeat;background-size: 100%;">
+    <div class="text-center" style="margin-top: 10%;">
+        <h1 style="font-weight: 700; color: whitesmoke; font-size: 120px; letter-spacing: 10px;">403</h1>
+        <h1 style="font-weight: 600; color: whitesmoke; font-size: 60px;">Đã xảy ra lỗi!</h1>
+        <h1 style="font-weight: 500; color: whitesmoke; font-size: 30px;">Không thể tìm thấy trang này. Hãy duyệt tìm trang khác</h1>
+        <form th:action="@{/home}" method="post">
+        	<button class="btn btn-primary mt-3" style="background-color: rgba(172, 172, 172, 0.514); border: none; font-size: 25px;">Trang chủ</button>
+        </form>
+        
+    </div>
+    <!-- Bootstrap core JS-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

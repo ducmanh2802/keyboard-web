@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{site/dashboard-user.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content"
+		class="col-lg-12 my-4 mt-3 mb-3 card content"
+		style="border: 1px solid rgba(214, 214, 214, 0.493); min-height: 600px;">
+		<h5><a th:href="@{/customer/info}"><i class="fa fa-arrow-left"></i>Trở lại</a></h5>
+		<div class="row m-5">
+			<h3>Chi tiết đơn hàng có mã [[${orderId}]]</h3>
+			<table class="table table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <th width="8%">STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, count : ${orderDetail}">
+                        <td class="text-center" th:text="${count.index+1}"></td>
+                        <td th:text="${item.product.name}"></td>
+                        <td class="text-center" th:text="${item.quantity}"></td>
+                        <td class="text-center" th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="mt-3">Tổng tiền: [[${#numbers.formatDecimal(amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ']]</h3>
+		</div>
+	</div>
+</body>
+
+</html>

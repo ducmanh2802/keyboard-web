@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="row mt-4 mb-2">
+			<div class="col-7 offset-2">
+				<form th:action="@{/admin/categories/search}" method="get"
+					class="input-group">
+					<input hidden="hidden" name="size" th:value="${categories.size}" />
+					<input type="text" class="form-control" placeholder="Tên thương hiệu"
+						name="name" th:value="${name}" aria-label="Recipient's username"
+						aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button style="font-size: 13px;" class="btn btn-outline-secondary">
+							<span class="fa fa-search"></span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<form th:action="@{/admin/categories/add}" method="get">
+			<button class="btn btn-primary float-right m-3">Thêm thương
+				hiệu</button>
+		</form>
+		<div class="alert alert-success row col-12 ml-1" th:if="${message}"
+			th:text="${message}"></div>
+		<div class="alert alert-danger row col-12 ml-1" th:if="${error}"
+			th:text="${error}"></div>
+		<div class="row mt-5" th:if="${categories.totalElements==0}">
+			<div class="col-12">
+				<h1 class="text-center">Không tìm thấy nhãn hiệu</h1>
+			</div>
+		</div>
+		<table class="table table-bordered mt-3" th:unless="${categories.totalElements==0}">
+			<thead>
+				<tr class="text-center">
+					<th width="13%">Mã thương hiệu</th>
+					<th>Tên thương hiệu</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, count : ${categories}">
+					<td class="text-center" th:text="${item.categoryId}"></td>
+					<td th:text="${item.name}"></td>
+					<td width="20%" class="text-center"><a th:data-id="${item.categoryId}" th:data-name="${item.name}" style="cursor: pointer;color: #007bff;"
+						onclick="showConfigModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
+						><span
+							class="fa fa-trash"></span></a> \ <a
+						th:href="@{'/admin/categories/edit/'+${item.categoryId}}"><span
+							class="fa fa-edit"></span></a></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<script>
+			function showConfigModalDialog(id, name) {
+				$('#categoryName').text(name);
+				$('#yesOption').attr('href', '/admin/categories/delete/'+id);
+				$('#configmationId').modal('show');
+			}
+		</script>
+		
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="configmationId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Bạn có muốn xoá thương hiệu có tên "<span id="categoryName"></span>" ?</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOption" type="button" class="btn btn-danger">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav aria-label="Page navigation example form-inline"
+			th:unless="${categories.totalElements==0}">			
+			<ul class="pagination float-right ml-4">
+				<li class="page-item"><a class="page-link" th:href="@{'/admin/categories/page?page=0&size='+${categories.size} + '&name=' + ${name}}"><i class="fa fa-step-backward"></i></a></li>
+				<li class="page-item"><a class="page-link" th:href="@{'/admin/categories/page?page='+${(categories.number-1 < 0) ? 0 : categories.number-1}+'&size='+${categories.size} + '&name=' + ${name}}"><i class="fa fa-chevron-left"></i></a></li>
+				<li class="page-item"><a class="page-link" th:href="@{'/admin/categories/page?page='+${(categories.number+1 > categories.totalPages-1) ? categories.totalPages-1 : categories.number+1}+'&size='+${categories.size} + '&name=' + ${name}}"><i class="fa fa-chevron-right"></i></a></li>
+				<li class="page-item"><a class="page-link" th:href="@{'/admin/categories/page?page='+${categories.totalPages-1}+'&size='+${categories.size} + '&name=' + ${name}}"><i class="fa fa-step-forward"></i></a></li>
+			</ul>
+			
+			<form th:action="@{/admin/categories/page}" method="get" class="float-right p-2" style="font-weight: 350;">
+				<input hidden="hidden" name="name" th:value="${name}" />
+				<input hidden="hidden" name="page" th:value="${categories.number}" />
+				<div class="form-inline">
+					<label>Hiển thị: </label> 
+						<select name="size" style="border: none; box-shadow: 0 0 1px gray; width: 50px; border-radius: 3px;" onchange="this.form.submit()">
+							<option th:selected="${categories.size == 5}" value="5">5</option>
+							<option th:selected="${categories.size == 10}" value="10">10</option>
+							<option th:selected="${categories.size == 15}" value="15">15</option>
+						</select> 
+					<label> mục</label>
+					<small class="ml-4 p-1"> [[${categories.number*categories.size+1}]]-[[${(categories.number*categories.size+categories.size) < categories.totalElements ? categories.number*categories.size+categories.size : categories.totalElements}]] trong [[${categories.totalElements}]] mục</small>
+				</div>		
+			</form>
+		</nav>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="col-3 mt-4">
+		<form th:action="@{/admin/reports}" method="get">
+			<select class="custom-select" onchange="this.form.submit()" name="reports">
+				<option th:selected="${report == 0}" value="0">Thống kê doanh thu</option>	
+				<option th:selected="${report == 1}" value="1">Nhãn hàng bán chạy nhất</option>
+				<option th:selected="${report == 2}" value="2">Sản phẩm bán chạy nhất</option>
+				<option th:selected="${report == 3}" value="3">Khách hàng mua nhiều nhất</option>
+			</select>
+		</form>			
+		</div>
+		<table class="table table-bordered mt-3">
+			<thead>
+				<tr class="text-center">
+					<th width="8%">STT</th>
+					<th width="8%">Mã KH</th>
+					<th>Tên khách hàng</th>
+					<th width="20%">Tổng đơn</th>
+					<th>Tổng tiền</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, count : ${listBestBuyer}">
+					<td class="text-center" th:text="${count.index+1}"></td>
+					<td class="text-center" th:text="${item[0]}"></td>
+					<td th:text="${item[1]}"></td>
+					<td class="text-center" th:text="${item[2]}"></td>
+					<td class="text-center"
+						th:text="${#numbers.formatDecimal(item[3], 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</body>
+
+</html>

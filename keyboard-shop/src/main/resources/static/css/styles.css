@@ -1,0 +1,35 @@
+.list-group-item {
+  text-decoration: none !important;
+  color: rgb(73, 73, 73);
+}
+
+.info {
+  border: none; 
+  background-color: white !important; 
+  /* box-shadow: 0 0 2px rgba(119, 119, 119, 0.295); */
+  font-weight: 500;
+}
+
+.content {
+  background-color: rgba(245, 245, 245, 0.295);
+  box-shadow: 0 2px 3px rgba(161, 161, 161, 0.377);
+}
+
+.fa-step-backward, .fa-chevron-left, .fa-chevron-right, .fa-step-forward {
+	font-size: 12px;
+	color: gray;
+}
+
+#menu{
+	color: white;
+	background: #84afbe;;
+}
+
+#brand {
+	background: antiquewhite;
+	color: brown;
+}
+
+.page-link {
+	color: gray;
+}

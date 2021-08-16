@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+</head>
+
+<body>
+	<div th:fragment="menu" class="col-lg-3 my-4">
+		<div class="card mb-4"
+			style="box-shadow: 0 1px 2px lightgray; background-color: #d09683; border: 1px;">
+			<p class="card-header text-center"
+				style="font-size: 24px; font-weight: 500; color: white;">Danh
+				mục</p>
+			<div class="list-group list-group-flush">
+				<a class="list-group-item"
+					th:href="@{'/home/brand/'+${item.categoryId}}"
+					th:each="item : ${categories}"
+					th:id="${item.categoryId==brand?'brand':''}"
+					>Bàn phím cơ hãng
+					[[${item.name}]]</a>
+			</div>
+		</div>
+		<div>
+			<label for="" class="ml-1">Tìm kiếm:</label>
+			<form th:action="@{/home/search}" method="post">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Tên sản phẩm" name="name" th:value="${name}"
+						aria-label="Recipient's username" aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button style="font-size: 13px;" class="btn btn-outline-secondary">
+							<span class="fa fa-search"></span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<form th:action="@{/home/page}" method="get">
+			<input hidden="hidden" th:value="${name}" name="name" />
+			<input hidden="hidden" th:value="${brand==null?-1:brand}" name="brand" />
+			<input hidden="hidden" th:value="${products.number}" name="page" />
+			<div class="mt-4">
+				<label for="" class="ml-1">Sắp xếp theo:</label> <select name="filter"
+					class="custom-select" onchange="this.form.submit()">
+					<option th:selected="${filter==0}" value="0">Mặc định</option>
+					<option th:selected="${filter==1}" value="1">Mới nhất</option>
+					<option th:selected="${filter==2}" value="2">Cũ nhất</option>
+					<option th:selected="${filter==3}" value="3">Giá giảm dần</option>
+					<option th:selected="${filter==4}" value="4">Giá tăng dần</option>
+				</select>
+			</div>
+		</form>
+		
+
+	</div>
+</body>
+
+</html>

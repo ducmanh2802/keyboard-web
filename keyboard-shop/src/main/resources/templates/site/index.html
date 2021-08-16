@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{site/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+<body></body>
+<div layout:fragment="content" class="col-lg-9 my-4">
+	<div class="row">
+		<div class="col-lg-4 col-md-6 mb-4" th:each="item : ${products}">
+			<div class="card h-100">
+				<a th:href="@{'/home/item/'+${item.productId}}"><img
+					class="card-img-top" th:src="@{'/getproduct/'+${item.image}}"
+					alt="..." /></a>
+				<div class="card-body">
+					<h4 class="card-title text-center">
+						<a th:href="@{'/home/item/'+${item.productId}}"
+							th:text="${item.name}"></a>
+					</h4>
+					<h5 class="text-center" th:unless="${item.discount>0}" th:text="${#numbers.formatDecimal(item.unitPrice - (item.unitPrice * item.discount/100), 1, 'DEFAULT', 0, 'DEFAULT')}+ ' VNĐ'"></h5>
+					<div style="display: flex;" class="text-center" th:if="${item.discount>0}">
+						<p style="font-size: 12px;text-decoration: line-through;" th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'DEFAULT', 0, 'DEFAULT')}"></p>
+						<h5 th:text="${#numbers.formatDecimal(item.unitPrice - (item.unitPrice * item.discount/100), 1, 'DEFAULT', 0, 'DEFAULT')}+ ' VNĐ'"></h5>
+					</div>
+					<div th:if="${item.discount>0}" class="text-center">
+						<small class="badge badge-danger m-0">-[[${#numbers.formatDecimal(item.discount, 1, 'DEFAULT', 0, 'DEFAULT')}+'%']]</small>
+					</div>					
+					<p class="text-center">
+						<small>(còn [[${item.quantity}]] sản phẩm)</small>
+					</p>
+					<p class="card-text text-center">Bàn phím cơ chơi game. Sự lựa
+						chọn tuyệt vời.</p>
+				</div>
+				<a class="card-footer text-center"
+					th:href="@{'/addCart/'+${item.productId}}"
+					style="cursor: pointer; text-decoration: none; color: gray;"> <span
+					style="margin: auto;">Thêm vào giỏ hàng <i
+						class="fa fa-shopping-cart"></i></span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="row text-center" th:if="${products.totalElements==0}">
+		<h1 class="m-auto">Không tìm thấy sản phẩm nào phù hợp!</h1>
+	</div>
+	<div th:unless="${products.totalElements==0}">
+		<nav aria-label="Page navigation example"
+			th:if="${products.totalPages>1}">
+			<ul class="pagination" style="justify-content: center;">
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/home/page?page=0&name='+${name==null?'':name}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?-1:brand}}"><i
+						class="fa fa-step-backward"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/home/page?page='+${products.number-1<0?0:products.number-1}+'&name='+${name==null?'':name}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?-1:brand}}"><i
+						class="fa fa-chevron-left"></i></a></li>
+
+				<li th:each="pageNumber : ${pageNumbers}"
+					th:if="${products.totalPages > 1}"
+					th:class="${pageNumber == products.number+1 ? 'page-item active' : 'page-item'}">
+					<a class="page-link"
+					th:href="@{'/home/page?page='+${pageNumber-1}+'&name='+${name==null?'':name}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?-1:brand}}">[[${pageNumber}]]</a>
+				</li>
+
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/home/page?page='+${products.number+1>products.totalPages-1?products.totalPages-1:products.number+1}+'&name='+${name==null?'':name}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?-1:brand}}"><i
+						class="fa fa-chevron-right"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/home/page?page='+${products.totalPages-1}+'&name='+${name==null?'':name}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?-1:brand}}"><i
+						class="fa fa-step-forward"></i></a></li>
+			</ul>
+		</nav>
+	</div>
+
+</div>
+</body>
+
+</html>

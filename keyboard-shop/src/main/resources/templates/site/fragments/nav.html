@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+		style="background-color: #2d4262 !important; margin-bottom: 30%;"
+		th:fragment="nav">
+		<div class="container">
+			<a class="navbar-brand col-3 p-0" th:href="@{/home}"><img
+				th:src="@{/../assets/favicon.ico}" width="15%"
+				class="img-fluid p-0 mr-2" alt="">Keyboard Store</a>
+			<div class="col-3 p-0">
+				<button class="navbar-toggler float-right" type="button"
+					data-toggle="collapse" data-target="#navbarResponsive"
+					aria-controls="navbarResponsive" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item"><a class="nav-link" th:href="@{/cart}"><i
+								class="fa fa-shopping-cart" style="font-size: 25px;"></i><small
+								class="badge badge-light">[[${totalCartItems}]]</small></a></li>
+						<li class="nav-item dropdown pl-1"><a
+							class="nav-link dropdown-toggle" href="#" id="dropdownMenuLink"
+							data-toggle="dropdown"> Tài khoản </a>
+
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								<a class="dropdown-item" th:href="@{/customer/info}"
+									th:if="${isLogin}">Thông tin cá nhân</a> 
+<!-- 									<a class="dropdown-item" th:href="@{/customer/changePassword}" th:if="${isLogin}">Đổi mật khẩu</a>  -->
+									<a class="dropdown-item" th:href="@{/customer/editProfile}" th:if="${isLogin}">Chỉnh
+									sửa thông tin</a> <a class="dropdown-item" th:href="@{/logout}"
+									th:if="${isLogin}">Đăng xuất</a> <a class="dropdown-item"
+									th:href="@{/login}" th:unless="${isLogin}">Đăng nhập</a> <a
+									class="dropdown-item" th:href="@{/register}" th:unless="${isLogin}">Đăng kí</a> 
+									<a class="dropdown-item" th:href="@{/forgotPassword}" th:unless="${isLogin}">Quên mật khẩu</a>
+							</div></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+</body>
+
+</html>

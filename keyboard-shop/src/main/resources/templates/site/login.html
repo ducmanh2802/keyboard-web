@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Login</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-7" style="margin: 60px auto; border-radius: 10px;">
+
+				<a th:href="@{/home}" class="fa fa-home"
+					style="font-size: 50px; text-decoration: none; color: gray;"></a>
+				<div class="alert alert-success text-center" role="alert"
+					th:if="${message}">
+					<strong>Chúc mừng!</strong> Bạn đã đăng kí thành công! Hãy đăng
+					nhập để dễ dàng sử dụng.
+				</div>
+				<div class="alert alert-danger text-center" role="alert"
+					th:if="${error}">Tài khoản hoặc mật khẩu không đúng!</div>
+				<div
+					style="box-shadow: 0 2px 2px rgba(128, 128, 128, 0.377); border-radius: 20px;">
+					<div class="row ml-0 mr-0 card"
+						style="border-radius: 20px; background-color: rgba(169, 215, 255, 0.027);">
+						<div class="card-body" style="margin: 20px;">
+							<div class="row" style="margin: 20px 10px;">
+								<div class="text-center col-5" style="margin-top: 80px;">
+									<img src="../assets/favicon.ico"
+										style="border-radius: 50%; background-color: rgba(236, 233, 233, 0.596); box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);"
+										class="img-fluid p-5">
+								</div>
+								<div class="col-7">
+									<form class="form-group"
+										th:action="@{/j_spring_security_check}" method="post">
+										<h1 class="text-center" style="font-weight: bold;">Đăng
+											nhập</h1>
+										<br> <br> <input type="text" name="username" id=""
+											class="form-control mb-3" placeholder="Tên đăng nhập"
+											style="border-radius: 15px; padding: 22px;"> <input
+											type="password" name="password" id="myPass"
+											class="form-control" placeholder="Mật khẩu"
+											style="border-radius: 15px; padding: 22px;">
+										<div class="mt-2 ml-2"
+											style="font-size: 14px; font-family: inherit; color: rgba(68, 68, 68, 0.801);">
+											<input type="checkbox" onclick="hidePass()" id="hide">
+											<label for="hide">Hiển thị mật khẩu</label>
+										</div>
+										<div class="row">
+											<a type="button" class="btn btn-link mt-1 mb-3 col-6"
+												th:href="@{/forgotPassword}"
+												style="color: rgb(128, 187, 255); text-decoration: none;">Quên
+												mật khẩu?</a> <a th:href="@{/register}" type="button"
+												class="btn btn-link mt-1 mb-3 col-6"
+												style="color: rgb(128, 187, 255); text-decoration: none;">Tạo
+												tài khoản</a>
+										</div>
+										<div class="row m-0 p-0">
+											<button class="btn btn-success col" name="submit"
+												type="submit" value="submit"
+												style="border-radius: 15px; padding: 8px 14px 8px 14px;">Đăng
+												nhập</button>
+										</div>
+									</form>
+									<div class="text-center">
+										<span>Hoặc đăng nhập bằng</span>
+									</div>
+									<div class="text-center mt-3">
+										<a class="btn btn-primary" th:href="@{/oauth2/authorization/facebook}"
+											style="border-radius: 50%; color: white; cursor: pointer;"><i class="fa fa-facebook-square"></i></a>
+											|
+										<a class="btn btn-danger" th:href="@{/oauth2/authorization/google}"
+											style="border-radius: 50%; color: white; cursor: pointer;"><i class="fa fa-google"></i></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script>
+		function hidePass() {
+			var x = document.getElementById("myPass");
+			if (x.type === "password") {
+				x.type = "text";
+			} else {
+				x.type = "password";
+			}
+		}
+	</script>
+</body>
+
+</html>

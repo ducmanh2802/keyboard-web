@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="row mt-4 mb-2">
+			<div class="col-7 offset-2">
+				<form th:action="@{/admin/customers/search}" class="input-group">
+					<input hidden="hidden" name="size" th:value="${customers.size}" />
+					<input type="text" class="form-control"
+						placeholder="Tên khách hàng" name="name" th:value="${name}"
+						aria-label="Recipient's username" aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button style="font-size: 13px;" class="btn btn-outline-secondary">
+							<span class="fa fa-search"></span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<form th:action="@{/admin/customers/add}">
+			<button class="btn btn-primary float-right m-3">Thêm khách
+				hàng mới</button>
+		</form>
+		<div class="alert alert-success row col-12 ml-1" th:if="${message}"
+			th:text="${message}"></div>
+		<div class="alert alert-danger row col-12 ml-1" th:if="${error}"
+			th:text="${error}"></div>
+		<div class="row mt-5" th:if="${customers.totalElements==0}">
+			<div class="col-12">
+				<h1 class="text-center">Không tìm thấy khách hàng</h1>
+			</div>
+		</div>
+		<form class="col-2 mt-4" th:action="@{/admin/customers/search}"
+			th:unless="${customers.totalElements==0}">
+			<input hidden="hidden" name="name" th:value="${name}" /> <input
+				hidden="hidden" name="page" th:value="${customers.number}" /> <input
+				hidden="hidden" name="size" th:value="${customers.size}" /> <select
+				class="custom-select" onchange="this.form.submit()" name="filter"
+				style="width: 85%">
+				<option th:selected="${filter == 0}" value="0">Mặc định</option>
+				<option th:selected="${filter == 1}" value="1">SX theo tên
+					(tăng dần)</option>
+				<option th:selected="${filter == 2}" value="2">SX theo tên
+					(giảm dần)</option>
+				<option th:selected="${filter == 3}" value="3">Cũ nhất</option>
+				<option th:selected="${filter == 4}" value="4">Mới nhất</option>
+			</select>
+		</form>
+		<table class="table table-bordered mt-3" th:unless="${customers.totalElements==0}">
+			<thead>
+				<tr class="text-center">
+					<th>Mã KH</th>
+					<th>Ảnh</th>
+					<th>Họ và tên</th>
+					<th>Email</th>
+<!-- 					<th>Mật khẩu</th> -->
+					<th>Giới tính</th>
+					<th>Số điện thoại</th>
+					<th>Địa chỉ</th>
+					<th width="10%">Ngày đăng kí</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${customers}" th:if="${item.status}" th:unless="${item.admin}">
+					<td class="text-center" th:text="${item.customerId}"></td>
+					<td><img th:src="@{'/getcustomer/'+${item.image}}"
+						width="80px" /></td>
+					<td th:text="${item.name}"></td>
+					<td th:text="${item.email}"></td>
+<!-- 					<td class="text-center" th:text="${item.password}"></td> -->
+					<td class="text-center" th:text="${item.gender?'Nam':'Nữ'}"></td>
+					<td class="text-center" th:text="${item.phone}"></td>
+					<td th:text="${item.address}"></td>
+					<td class="text-center"
+						th:text="${#dates.format(item.registerDate, 'dd-MM-yyyy')}"></td>
+					<td class="text-center"><a th:data-id="${item.customerId}" th:data-name="${item.name}" style="cursor: pointer;color: #007bff;"
+						onclick="showConfigModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
+						><span
+							class="fa fa-trash"></span></a> \ <a
+						th:href="@{'/admin/customers/edit/'+${item.customerId}}"><span
+							class="fa fa-edit"></span></a></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<script>
+			function showConfigModalDialog(id, name) {
+				$('#customerName').text(name);
+				$('#yesOption').attr('href', '/admin/customers/delete/'+id);
+				$('#configmationId').modal('show');
+			}
+		</script>
+		
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="configmationId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Bạn có muốn xoá thương hiệu có tên "<span id="customerName"></span>" ?</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOption" type="button" class="btn btn-danger">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav aria-label="Page navigation example form-inline"
+			th:unless="${customers.totalElements==0}">
+			<ul class="pagination float-right ml-4">
+				<li class="page-item"><a
+					th:href="@{'/admin/customers/page?page=0&name='+${name}+'&size='+${customers.size}+'&filter='+${filter==null?0:filter}}"
+					class="page-link"><i class="fa fa-step-backward"></i></a></li>
+				<li class="page-item"><a
+					th:href="@{'/admin/customers/page?page='+${(customers.number-1<0)?0:customers.number-1}+'&name='+${name}+'&size='+${customers.size}+'&filter='+${filter==null?0:filter}}"
+					class="page-link"><i class="fa fa-chevron-left"></i></a></li>
+				<li class="page-item"><a
+					th:href="@{'/admin/customers/page?page='+${(customers.number+1>customers.totalPages-1)?customers.totalPages-1:customers.number+1}+'&name='+${name}+'&size='+${customers.size}+'&filter='+${filter==null?0:filter}}"
+					class="page-link"><i class="fa fa-chevron-right"></i></a></li>
+				<li class="page-item"><a
+					th:href="@{'/admin/customers/page?page='+${customers.totalPages-1}+'&name='+${name}+'&size='+${customers.size}+'&filter='+${filter==null?0:filter}}"
+					class="page-link"><i class="fa fa-step-forward"></i></a></li>
+			</ul>
+
+			<form th:action="@{/admin/customers/page}" class="float-right p-2"
+				style="font-weight: 350;">
+				<input hidden="hidden" name="filter" th:value="${filter}" /> <input
+					hidden="hidden" name="name" th:value="${name}" /> 
+<!-- 					<input hidden="hidden" name="page" th:value="${customers.number}" /> -->
+				<div class="form-inline">
+					<label>Hiển thị: </label> <select name="size"
+						style="border: none; box-shadow: 0 0 1px gray; width: 50px; border-radius: 3px;"
+						onchange="this.form.submit()">
+						<option th:selected="${customers.size == 5}" value="5">5</option>
+						<option th:selected="${customers.size == 10}" value="10">10</option>
+						<option th:selected="${customers.size == 15}" value="15">15</option>
+					</select> <label> mục</label> <small class="ml-4 p-1"> [[${customers.number*customers.size+1}]] - [[${(customers.number*customers.size+customers.size>customers.totalElements)?customers.totalElements:customers.number*customers.size+customers.size}]] trong [[${customers.totalElements}]]
+						mục</small>
+				</div>
+			</form>
+		</nav>
+	</div>
+</body>
+
+</html>

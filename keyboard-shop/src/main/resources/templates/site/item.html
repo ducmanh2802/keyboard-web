@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{site/dashboard-user.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-12" th:object="${product}">
+		<div class="card mt-4">
+			<img class="card-img-top img-fluid" th:src="@{'/getproduct/'+*{image}}" style="width: 60%; margin: auto;"
+				alt="..." />
+			<div class="card-body">
+				<h3 class="card-title" th:text="*{name}"></h3>
+				<h4 th:text="*{'Giá chỉ : '+#numbers.formatDecimal(unitPrice - (unitPrice * discount/100), 1, 'DEFAULT', 0, 'DEFAULT')}+ ' VNĐ'"></h4>
+				<h5 style="font-size: 15px;" th:if="*{discount>0}" th:text="'Giảm giá '+*{#numbers.formatDecimal(discount, 1, 'DEFAULT', 0, 'DEFAULT')}+'%'"></h5>
+				<h5>([[*{status==0?'Hàng mới 100%':'Hàng cũ đã qua sử dụng'}]]) <small>(còn [[${product.quantity}]] sản phẩm)</small></h5>
+				<p class="card-text" th:text="*{desciption}"></p>
+				<a class="btn btn-success" th:href="@{'/addCart/'+*{productId}}">Thêm vào giỏ hàng <i class="fa fa-shopping-cart"></i></a>
+			</div>
+		</div>
+		<div class="card card-outline-secondary my-4">
+			<div class="card-header">
+				<h4>Gợi ý</h4>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-2" th:each="item : ${productSuggest}">
+						<div class="card">
+							<a th:href="@{'/home/item/'+${item.productId}}"><img class="card-img-top"
+								th:src="@{'/getproduct/'+${item.image}}" alt="..." /></a>
+							<div class="card-body p-0 text-center">
+								<p class="card-title"
+									style="font-weight: bold; font-size: 17px;">
+									<a th:href="@{'/home/item/'+${item.productId}}" th:text="${item.name}"></a>
+								</p>
+								<p style="font-weight: 700;" th:text="${#numbers.formatDecimal(item.unitPrice - (item.unitPrice * item.discount/100), 1, 'DEFAULT', 0, 'DEFAULT')}+ ' VNĐ'"></p>
+							</div>
+							<a class="card-footer text-center" th:href="@{'/addCart/'+${item.productId}}"
+								style="cursor: pointer; text-decoration: none; padding: 8px 0;">
+								<i class="fa fa-shopping-cart m-auto"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

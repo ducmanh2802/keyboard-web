@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+</head>
+
+<body>
+	<div class="col-lg-2 my-4" th:fragment="menu">
+		<div class="card mb-4 text-center"
+			style="box-shadow: 0 1px 2px lightgray; background-color: #2f3a45c2; border: 1px;">
+			<p class="card-header" style="font-size: 24px; font-weight: 500; color: white;">Danh
+				mục</p>
+			<div class="list-group list-group-flush">
+				<a class="list-group-item" th:id="${menuC}" th:href="@{/admin/customers}">Quản lý khách hàng</a> <a
+					class="list-group-item" th:id="${menuP}" th:href="@{/admin/products}">Quản lý sản phẩm</a> <a
+					class="list-group-item" th:id="${menuCa}" th:href="@{/admin/categories}">Quản lý nhãn hiệu</a> <a
+					class="list-group-item" th:id="${menuO}" th:href="@{/admin/orders}">Quản lý đơn hàng</a> <a
+					class="list-group-item" th:id="${menuR}" th:href="@{/admin/reports/statistical}">Thống kê doanh thu</a> <a
+					class="list-group-item" th:id="${menuI}" th:href="@{/admin/inventory}">Hàng tồn kho</a>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

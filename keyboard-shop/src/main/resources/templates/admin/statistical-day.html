@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="col-5 mt-4" style="display: flex;">
+		<form th:action="@{/admin/reports}" method="get">
+			<select class="custom-select" onchange="this.form.submit()" name="reports">
+				<option th:selected="${report == 0}" value="0">Thống kê doanh thu</option>	
+				<option th:selected="${report == 1}" value="1">Nhãn hàng bán chạy nhất</option>
+				<option th:selected="${report == 2}" value="2">Sản phẩm bán chạy nhất</option>
+				<option th:selected="${report == 3}" value="3">Khách hàng mua nhiều nhất</option>
+			</select>
+		</form>		
+		<form th:action="@{/admin/reports/statistical}" method="get" class="ml-4">
+			<select class="custom-select" onchange="this.form.submit()" name="statisticalId">
+				<option th:selected="${statisticalId == 0}" value="0">Theo ngày</option>	
+				<option th:selected="${statisticalId == 1}" value="1">Theo tháng</option>
+				<option th:selected="${statisticalId == 2}" value="2">Theo năm</option>
+			</select>
+		</form>			
+		</div>
+		<table class="table table-bordered mt-3">
+			<thead>
+				<tr class="text-center">
+					<th width="8%">STT</th>
+					<th>Thời gian</th>
+					<th width="20%">Tổng số đơn hàng</th>
+					<th>Tổng doanh thu</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, count : ${statistical}">
+					<td class="text-center" th:text="${count.index+1}"></td>
+					<td class="text-center" th:text="${#dates.format(item[0], 'dd-MM-yyyy')}"></td>
+					<td class="text-center" th:text="${item[1]}"></td>
+					<td class="text-center"
+						th:text="${#numbers.formatDecimal(item[2], 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</body>
+
+</html>

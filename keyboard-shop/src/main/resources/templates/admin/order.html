@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="row mt-4 mb-2">
+			<div class="col-7 offset-2">
+				<form th:action="@{/admin/orders/search}" method="get"
+					class="input-group">
+					<input type="number" class="form-control" placeholder="Mã đơn hàng"
+						name="id" aria-label="Recipient's username" th:value="${id}"
+						aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button style="font-size: 13px;" class="btn btn-outline-secondary">
+							<span class="fa fa-search"></span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<form th:action="@{/admin/orders/page}" class="col-2 mt-4"
+			method="get">
+			<input hidden="hidden" name="page" value="0" /> <input
+				hidden="hidden" name="size" th:value="${orders.size}" /> <select
+				class="custom-select" onchange="this.form.submit()" name="filter"
+				style="width: 85%">
+				<option th:selected="${filter==0}" value="0">Mặc định</option>
+				<option th:selected="${filter==1}" value="1">Chưa xác nhận</option>
+				<option th:selected="${filter==2}" value="2">Đang giao hàng</option>
+				<option th:selected="${filter==3}" value="3">Đã giao hàng</option>
+				<option th:selected="${filter==4}" value="4">Đã huỷ</option>
+				<option th:selected="${filter==5}" value="5">Tổng tiền lớn
+					nhất</option>
+			</select>
+		</form>
+		<div class="row mt-5" th:if="${orders.totalElements==0}">
+			<div class="col-12">
+				<h1 class="text-center">Không tìm thấy đơn hàng phù hơp</h1>
+			</div>
+		</div>
+		<table class="table table-bordered mt-3"
+			th:unless="${orders.totalElements==0}">
+			<thead>
+				<tr class="text-center">
+					<th width="15%">Mã đơn hàng</th>
+					<th>Tên khách hàng</th>
+					<th>Số điện thoại</th>
+					<th>Ngày đặt</th>
+					<th>Tổng tiền</th>
+					<th width="10%">Chi tiết</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${orders}">
+					<td class="text-center" th:text="${item.orderId}"></td>
+					<td th:text="${item.customer.name}"></td>
+					<td th:text="${item.customer.phone}"></td>
+					<td class="text-center"
+						th:text="${#dates.format(item.orderDate, 'dd-MM-yyyy')}"></td>
+					<td class="text-center"
+						th:text="${#numbers.formatDecimal(item.amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+					<td class="text-center"><a
+						th:href="@{'/admin/orders/detail/'+${item.orderId}}"><i
+							class="fa fa-info-circle">Chi tiết</i></a></td>
+					<td class="text-center">
+						<div th:if="${item.status==0}">
+							<a style="cursor: pointer; color: green;" th:data-id="${item.orderId}"
+								onclick="showConfigConfirmModalDialog(this.getAttribute('data-id'))"><i
+								class="fa fa-check-circle">Xác nhận</i></a> | <a
+								style="cursor: pointer;" th:data-id="${item.orderId}"
+								onclick="showConfigCancelModalDialog(this.getAttribute('data-id'))"><i
+								class="fa fa-remove text-danger">Huỷ đơn</i></a>
+						</div>
+						<div th:if="${item.status==1}">
+							<a style="cursor: pointer; color: #007bff;" th:data-id="${item.orderId}"
+								onclick="showConfigDeliveredModalDialog(this.getAttribute('data-id'))"><i
+								class="fa fa-check-circle">Xác nhận đã giao</i></a>
+						</div>
+						<div th:if="${item.status==2}">
+							<i class="fa fa-check-circle">Đã thanh toán</i>
+						</div>
+						<div th:if="${item.status==3}">
+							<i class="fa fa-remove">Đã huỷ</i>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- Huỷ đơn -->
+		<script>
+			function showConfigCancelModalDialog(id) {
+				$('#idCancel').text(id);
+				$('#yesOptionCanCel').attr('href', '/admin/orders/cancel/' + id);
+				$('#configmationCancelId').modal('show');
+			}
+		</script>
+
+		<!-- Modal -->
+		<div class="modal" id="configmationCancelId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>
+							Bạn có muốn huỷ đơn hàng có mã "<span id="idCancel"></span>" ?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOptionCanCel" type="button" class="btn btn-danger">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Xác nhận đơn -->
+		<script>
+			function showConfigConfirmModalDialog(id) {
+				$('#idConfirm').text(id);
+				$('#yesOptionConfirm').attr('href', '/admin/orders/confirm/' + id);
+				$('#configmationConfirmId').modal('show');
+			}
+		</script>
+
+		<!-- Modal -->
+		<div class="modal" id="configmationConfirmId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>
+							Bạn có muốn xác nhận đơn hàng có mã "<span id="idConfirm"></span>" ?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOptionConfirm" type="button" class="btn btn-primary">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Xác nhận đã giao -->
+		<script>
+			function showConfigDeliveredModalDialog(id) {
+				$('#idDelivered').text(id);
+				$('#yesOptionDelivered').attr('href', '/admin/orders/delivered/' + id);
+				$('#configmationDeliveredId').modal('show');
+			}
+		</script>
+
+		<!-- Modal -->
+		<div class="modal" id="configmationDeliveredId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>
+							Bạn có muốn xác nhận đơn hàng có mã "<span id="idDelivered"></span>" ?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOptionDelivered" type="button" class="btn btn-primary">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<nav aria-label="Page navigation example form-inline"
+			th:if="${orders.totalElements>0}">
+			<ul class="pagination float-right ml-4">
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/orders/page?page=0&size='+${orders.size}+'&filter='+${filter==null?0:filter}}"><i
+						class="fa fa-step-backward"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/orders/page?page='+${orders.number-1<0?0:orders.number-1}+'&size='+${orders.size}+'&filter='+${filter==null?0:filter}}"><i
+						class="fa fa-chevron-left"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/orders/page?page='+${orders.number+1>orders.totalPages-1?orders.totalPages-1:orders.number+1}+'&size='+${orders.size}+'&filter='+${filter==null?0:filter}}"><i
+						class="fa fa-chevron-right"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/orders/page?page='+${orders.totalPages-1}+'&size='+${orders.size}+'&filter='+${filter==null?0:filter}}"><i
+						class="fa fa-step-forward"></i></a></li>
+			</ul>
+
+			<form th:action="@{/admin/orders/page}" method="get"
+				class="float-right p-2" style="font-weight: 350;">
+				<input type="text" hidden="hidden" name="page" value="0" /> <input
+					type="text" hidden="hidden" name="filter" th:value="${filter}" />
+				<div class="form-inline">
+					<label>Hiển thị: </label> <select name="size"
+						style="border: none; box-shadow: 0 0 1px gray; width: 50px; border-radius: 3px;"
+						onchange="this.form.submit()">
+						<option th:selected="${orders.size == 5}" value="5">5</option>
+						<option th:selected="${orders.size == 10}" value="10">10</option>
+						<option th:selected="${orders.size == 15}" value="15">15</option>
+					</select> <label> mục</label> <small class="ml-4 p-1">[[${orders.number*orders.size+1}]]-[[${(orders.number*orders.size+orders.size
+						> orders.totalElements) ? orders.totalElements :
+						orders.number*orders.size+orders.size}]] trong
+						[[${orders.totalElements}]] mục</small>
+				</div>
+			</form>
+		</nav>
+	</div>
+</body>
+
+</html>

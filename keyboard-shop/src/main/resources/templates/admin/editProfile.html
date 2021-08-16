@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard-admin.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4 mt-3 mb-3 card content"
+                style="border: 1px solid rgba(214, 214, 214, 0.493);min-height: 600px;margin: auto;">
+                <div class="row mt-2">
+                    <form th:action="@{/admin/account/editProfile}" class="col mt-4" method="post"
+				enctype="multipart/form-data" th:object="${customer}">
+				<div class="row">
+					<div class="col-7 ml-3">
+						<div class="form-group" hidden="hidden">
+							<label for="customerId">ID</label> <input type="text" name=""
+								id="customerId" class="form-control" th:field="*{customerId}">
+						</div>
+						<div class="form-group">
+							<label for="name">Họ và tên</label> <input type="text"
+								class="form-control" id="name" th:field="*{name}"> <small
+								class="text-danger" th:if="${#fields.hasErrors('name')}">Hãy nhập họ và tên</small>
+						</div>
+						<div class="form-group">
+							<label for="email">Email</label> <input type="text"
+								th:readonly="readonly" id="email" class="form-control"
+								th:field="*{email}">
+						</div>
+						<input hidden="hidden" th:field="*{password}" />
+						<div class="form-group">
+							<div class="form-group">
+								<label for="gender">Giới tính</label> <select id="gender" name="gender"
+									class="form-control">
+									<option th:selected="*{gender}" value="true">Nam</option>
+									<option th:selected="!*{gender}" value="false">Nữ</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="phone">Số điện thoại</label> <input type="text"
+								class="form-control" id="phone" th:field="*{phone}"> <small
+								id="phone" class="text-danger"
+								th:if="${#fields.hasErrors('phone')}">Hãy nhập đúng số điện thoại</small>
+						</div>
+						<div class="form-group">
+							<label for="address">Địa chỉ:</label> <input type="text"
+								class="form-control" id="address" th:field="*{address}">
+							<small id="address" class="text-danger"
+								th:if="${#fields.hasErrors('address')}">Hãy nhập địa chỉ</small>
+						</div>
+					</div>
+					<div class="col-3 mt-3 offset-1">
+						<div class="text-center m-0">
+							<img th:src="@{'/getcustomer/'+*{image}}" width="60%" id="img"
+								class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}">
+							<div class="form-group">
+								<label for="customerImage">Hình ảnh</label> <input type="file"
+									name="photo" id="customerImage" class="form-control-file"
+									onchange="readURL(this);"> <input type="hidden" th:field="*{image}" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="col m-3">
+						<button class="btn btn-primary">Lưu</button>
+					</div>
+				</div>
+			</form>
+                </div>
+            </div>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{site/dashboard-user.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content"
+		class="col-lg-12 my-4 mt-3 mb-3 card content"
+		style="border: 1px solid rgba(214, 214, 214, 0.493); min-height: 600px;">
+		<div class="row mt-2">
+			<div class="col-12 text-center">
+				<img th:src="@{'/getcustomer/'+${user.image}}" width="80px"
+					style="border-radius: 50%;" class="img-fluid">
+			</div>
+			<div class="col-12 text-center">
+				<h3>Xin chào, [[${user.name}]] !</h3>
+				<hr>
+			</div>
+			<div class="col-12 mt-4">
+				<div class="row">
+					<div class="col-5 offset-1">
+						<label for="name" style="font-weight: 700;">Họ và tên:</label> <input
+							type="text" id="name" th:field="${user.name}"
+							class="form-control info" readonly>
+					</div>
+					<div class="col-5">
+						<label for="email" style="font-weight: 700;">Email:</label> <input
+							type="text" id="email" th:field="${user.email}"
+							class="form-control info" readonly>
+					</div>
+				</div>
+				<div class="row mt-5">
+					<div class="col-5 offset-1">
+						<label for="phone" style="font-weight: 700;">Số điện
+							thoại:</label> <input type="text" id="phone" th:field="${user.phone}"
+							class="form-control info" readonly>
+					</div>
+					<div class="col-5">
+						<label for="register-date" style="font-weight: 700;">Địa
+							chỉ:</label> <input type="text" id="register-date"
+							th:field="${user.address}" class="form-control info" readonly>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 mt-5">
+				<h5 style="text-decoration-line: underline;">Danh sách đơn hàng
+					chờ xác nhận:</h5>
+				<h5 class="text-center" th:if="${orders0.totalElements==0}"
+					style="font-size: 18px;">Bạn chưa có đơn hàng nào chờ xác
+					nhận!</h5>
+				<table class="table table-bordered"
+					th:unless="${orders0.totalElements==0}">
+					<thead>
+						<tr class="text-center">
+							<th>STT</th>
+							<th>Mã hoá đơn</th>
+							<th>Tổng tiền</th>
+							<th>Ngày mua</th>
+							<th>Chi tiết</th>
+							<th>Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="text-center" th:each="item, count : ${orders0}">
+							<th th:text="${count.index + 1}"></th>
+							<th th:text="${item.orderId}"></th>
+							<th
+								th:text="${#numbers.formatDecimal(item.amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></th>
+							<th th:text="${#dates.format(item.orderDate, 'dd-MM-yyyy')}"></th>
+							<th><a th:href="@{'/customer/detail/'+${item.orderId}}"><span
+									class="fa fa-info-circle">Chi tiết</span></a></th>
+							<th><a style="cursor: pointer;" th:data-id="${item.orderId}"
+								onclick="showConfigModalDialog(this.getAttribute('data-id'))"><span
+									class="fa fa-remove text-danger">Huỷ đơn</span></a></th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<script>
+				function showConfigModalDialog(id) {
+					$('#id').text(id);
+					$('#yesOption').attr('href', '/customer/cancel/' + id);
+					$('#configmationId').modal('show');
+				}
+			</script>
+
+			<!-- Modal -->
+			<div class="modal" tabindex="-1" role="dialog" id="configmationId">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Xác nhận</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>
+								Bạn có muốn huỷ đơn hàng có mã "<span id="id"></span>" ?
+							</p>
+						</div>
+						<div class="modal-footer">
+							<a id="yesOption" type="button" class="btn btn-danger">Có</a>
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Không</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 mt-5">
+				<h5 style="text-decoration-line: underline;">Danh sách đơn hàng
+					chờ thanh toán:</h5>
+				<h5 class="text-center" th:if="${orders1.totalElements==0}"
+					style="font-size: 18px;">Bạn chưa có đơn hàng nào chờ thanh
+					toán!</h5>
+				<table class="table table-bordered"
+					th:unless="${orders1.totalElements==0}">
+					<thead>
+						<tr class="text-center">
+							<th>STT</th>
+							<th>Mã hoá đơn</th>
+							<th>Tổng tiền</th>
+							<th>Ngày mua</th>
+							<th>Chi tiết</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="text-center" th:each="item, count : ${orders1}">
+							<th th:text="${count.index + 1}"></th>
+							<th th:text="${item.orderId}"></th>
+							<th
+								th:text="${#numbers.formatDecimal(item.amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></th>
+							<th th:text="${#dates.format(item.orderDate, 'dd-MM-yyyy')}"></th>
+							<th><a th:href="@{'/customer/detail/'+${item.orderId}}"><span
+									class="fa fa-info-circle">Chi tiết</span></a>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-12 mt-5 mb-5">
+				<h5 style="text-decoration-line: underline;">Danh sách đơn hàng
+					đã mua:</h5>
+				<h5 class="text-center" th:if="${orders2.totalElements==0}"
+					style="font-size: 18px;">Bạn chưa thanh toán đơn hàng nào!</h5>
+				<table class="table table-bordered"
+					th:unless="${orders2.totalElements==0}">
+					<thead>
+						<tr class="text-center">
+							<th>STT</th>
+							<th>Mã hoá đơn</th>
+							<th>Tổng tiền</th>
+							<th>Ngày mua</th>
+							<th>Chi tiết</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="text-center" th:each="item, count : ${orders2}"
+							th:if="${item.status!=0}">
+							<th th:text="${count.index + 1}"></th>
+							<th th:text="${item.orderId}"></th>
+							<th
+								th:text="${#numbers.formatDecimal(item.amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></th>
+							<th th:text="${#dates.format(item.orderDate, 'dd-MM-yyyy')}"></th>
+							<th><a th:href="@{'/customer/detail/'+${item.orderId}}"><span
+									class="fa fa-info-circle">Chi tiết</span></a></th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-12 mt-5 mb-5">
+				<h5 style="text-decoration-line: underline;">Danh sách đơn hàng
+					đã huỷ:</h5>
+				<h5 class="text-center" th:if="${orders3.totalElements==0}"
+					style="font-size: 18px;">Bạn không có đơn hàng bị huỷ!</h5>
+				<table class="table table-bordered"
+					th:unless="${orders3.totalElements==0}">
+					<thead>
+						<tr class="text-center">
+							<th>STT</th>
+							<th>Mã hoá đơn</th>
+							<th>Tổng tiền</th>
+							<th>Ngày mua</th>
+							<th>Chi tiết</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="text-center" th:each="item, count : ${orders3}"
+							th:if="${item.status!=0}">
+							<th th:text="${count.index + 1}"></th>
+							<th th:text="${item.orderId}"></th>
+							<th
+								th:text="${#numbers.formatDecimal(item.amount, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></th>
+							<th th:text="${#dates.format(item.orderDate, 'dd-MM-yyyy')}"></th>
+							<th><a th:href="@{'/customer/detail/'+${item.orderId}}"><span
+									class="fa fa-info-circle">Chi tiết</span></a></th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

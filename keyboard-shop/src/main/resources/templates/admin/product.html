@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<div class="row mt-4 mb-2">
+			<div class="col-7 offset-2">
+				<form th:action="@{/admin/products/search}" method="get"
+					class="input-group">
+					<input hidden="hidden" name="size" th:value="${products.size}" />
+					<input type="text" class="form-control" placeholder="Tên sản phẩm"
+						name="name" th:value="${name}" aria-label="Recipient's username"
+						aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button style="font-size: 13px;" class="btn btn-outline-secondary">
+							<span class="fa fa-search"></span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<form th:action="@{/admin/products/add}" method="get">
+			<button class="btn btn-primary float-right m-3">Thêm sản
+				phẩm</button>
+		</form>
+		<div class="alert alert-success row col-12 ml-1" th:if="${message}"
+			th:text="${message}"></div>
+		<div class="alert alert-danger row col-12 ml-1" th:if="${error}"
+			th:text="${error}"></div>
+		<div class="row mt-5" th:if="${products.totalElements==0}">
+			<div class="col-12">
+				<h1 class="text-center">Không tìm thấy sản phẩm</h1>
+			</div>
+		</div>
+		<div style="display: flex">
+			<label class="mt-4 pt-1" style="max-width: 10%" th:unless="${products.totalElements==0}">Nhãn hiệu:</label>
+			<form class="col-2 mt-4" th:action="@{/admin/products/page}"
+				method="get" th:unless="${products.totalElements==0}">
+				<input hidden="hidden" name="name" th:value="${name}" /> <input
+					hidden="hidden" name="page" th:value="0" /> <input
+					hidden="hidden" name="size" th:value="${products.size}" /> <select
+					class="custom-select" onchange="this.form.submit()" name="brand"
+					style="width: 85%">
+					<option th:selected="${brand==0}" value="0">Tất cả</option>
+					<option th:each="item : ${categories}"
+						th:value="${item.categoryId}"
+						th:selected="${brand==item.categoryId}">[[${item.name}]]</option>
+				</select>
+			</form>
+			<form class="col-2 mt-4" th:action="@{/admin/products/page}"
+				method="get" th:unless="${products.totalElements==0}">
+				<input hidden="hidden" name="brand" th:value="${brand}" /> <input
+					hidden="hidden" name="name" th:value="${name}" /> <input
+					hidden="hidden" name="page" th:value="${products.number}" /> <input
+					hidden="hidden" name="size" th:value="${products.size}" /> <select
+					class="custom-select" onchange="this.form.submit()" name="filter"
+					style="width: 85%">
+					<option th:selected="${filter==0}" value="0">Mặc định</option>
+					<option th:selected="${filter==1}" value="1">Mới nhất</option>
+					<option th:selected="${filter==2}" value="2">Cũ nhất</option>
+					<option th:selected="${filter==3}" value="3">Giá tăng dần</option>
+					<option th:selected="${filter==4}" value="4">Giá giảm dần</option>
+				</select>
+			</form>
+		</div>
+
+		<table class="table table-bordered mt-3"
+			th:unless="${products.totalElements==0}">
+			<thead>
+				<tr class="text-center">
+					<th>Mã SP</th>
+					<th>Hình ảnh</th>
+					<th>Tên sản phẩm</th>
+					<th>Đơn giá</th>
+					<th>Số lượng</th>
+					<th>Giảm giá</th>
+					<th>Hãng</th>
+					<th>Ngày thêm</th>
+					<th>Trạng thái</th>
+					<th>Hành động</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${products}">
+					<td width="7%" class="text-center" th:text="${item.productId}"></td>
+					<td class="text-center"><img
+						th:src="@{'/getproduct/'+${item.image}}" width="100px"
+						class="img-fluid"></td>
+					<td th:text="${item.name}"></td>
+					<td class="text-center"
+						th:text="${#numbers.formatDecimal(item.unitPrice, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+					<td class="text-center" th:text="${item.quantity}"></td>
+					<td class="text-center" th:text="${item.discount}+'%'"></td>
+					<td th:text="${item.category.name}"></td>
+					<td th:text="${#dates.format(item.enteredDate, 'dd-MM-yyyy')}"></td>
+					<td
+						th:text="${item.status==0?'Hàng mới':(item.status==1?'Hàng cũ':'')}"></td>
+					<td class="text-center"><a th:data-id="${item.productId}"
+						th:data-name="${item.name}"
+						style="cursor: pointer; color: #007bff;"
+						onclick="showConfigModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"><span
+							class="fa fa-trash"></span></a> \ <a
+						th:href="@{'/admin/products/edit/'+${item.productId}}"><span
+							class="fa fa-edit"></span></a></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<script>
+			function showConfigModalDialog(id, name) {
+				$('#productName').text(name);
+				$('#yesOption').attr('href', '/admin/products/delete/' + id);
+				$('#configmationId').modal('show');
+			}
+		</script>
+
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="configmationId">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Xác nhận</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>
+							Bạn có muốn xoá sản phẩm có tên "<span id="productName"></span>"
+							?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="yesOption" type="button" class="btn btn-danger">Có</a>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Không</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<nav aria-label="Page navigation example form-inline"
+			th:if="${products.totalElements>0}">
+			<ul class="pagination float-right ml-4">
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/products/page?page=0&name='+${name}+'&size='+${products.size}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?0:brand}}"><i
+						class="fa fa-step-backward"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/products/page?page='+${(products.number-1 < 0) ? 0 : products.number-1}+'&name='+${name}+'&size='+${products.size}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?0:brand}}"><i
+						class="fa fa-chevron-left"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/products/page?page='+${(products.number+1 > products.totalPages-1) ? products.totalPages-1 : products.number+1}+'&name='+${name}+'&size='+${products.size}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?0:brand}}"><i
+						class="fa fa-chevron-right"></i></a></li>
+				<li class="page-item"><a class="page-link"
+					th:href="@{'/admin/products/page?page='+${products.totalPages-1}+'&name='+${name}+'&size='+${products.size}+'&filter='+${filter==null?0:filter}+'&brand='+${brand==null?0:brand}}"><i
+						class="fa fa-step-forward"></i></a></li>
+			</ul>
+
+			<form th:action="@{/admin/products/page}" method="get"
+				class="float-right p-2" style="font-weight: 350;">
+				<input hidden="hidden" name="filter" th:value="${filter}" /> <input
+					hidden="hidden" name="name" th:value="${name}" /> <input
+					hidden="hidden" name="brand" th:value="${brand==null?0:brand}" /><input
+					hidden="hidden" name="page" th:value="0" />
+				<div class="form-inline">
+					<label>Hiển thị: </label> <select name="size"
+						style="border: none; box-shadow: 0 0 1px gray; width: 50px; border-radius: 3px;"
+						onchange="this.form.submit()">
+						<option th:selected="${products.size == 5}" value="5">5</option>
+						<option th:selected="${products.size == 10}" value="10">10</option>
+						<option th:selected="${products.size == 15}" value="15">15</option>
+					</select> <label> mục</label> <small class="ml-4 p-1">[[${products.number*products.size+1}]]-[[${(products.number*products.size+products.size
+						> products.totalElements) ? products.totalElements :
+						products.number*products.size+products.size}]] trong
+						[[${products.totalElements}]] mục</small>
+				</div>
+			</form>
+		</nav>
+	</div>
+</body>
+
+</html>

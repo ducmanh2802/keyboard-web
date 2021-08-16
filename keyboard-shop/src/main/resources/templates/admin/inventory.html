@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/dashboard.html}">
+
+<head>
+</head>
+
+<body>
+	<div layout:fragment="content" class="col-lg-10 my-4"
+		style="min-height: 600px; border: 1px solid rgba(128, 128, 128, 0.212);">
+		<table class="table table-bordered mt-3">
+			<thead>
+				<tr class="text-center">
+					<th width="8%">STT</th>
+					<th>Tên thương hiệu</th>
+					<th width="20%">Tổng số lượng sản phẩm</th>
+					<th>Tổng tiền</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item, count : ${inventory}">
+					<td class="text-center" th:text="${count.index+1}"></td>
+					<td th:text="${item.group.name}"></td>
+					<td class="text-center" th:text="${item.count}"></td>
+					<td class="text-center" th:text="${#numbers.formatDecimal(item.sum, 1, 'DEFAULT', 0, 'DEFAULT')}+' VNĐ'"></td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+</body>
+
+</html>
